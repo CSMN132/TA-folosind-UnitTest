@@ -9,6 +9,7 @@ from selenium.webdriver.common.by import By
 class TestAlerts(unittest.TestCase):
     ALERT_SELECTOR = (By.XPATH, '//button [@onclick="jsAlert()"]')
     RESULT_SELECTOR = (By.ID, 'result')
+    CONFIRM_SELECTOR = (By.CSS_SELECTOR, 'button[onclick="jsConfirm()"]')
 
     def setUp(self):
         self.driver = webdriver.Chrome()
@@ -26,3 +27,14 @@ class TestAlerts(unittest.TestCase):
         print(result_text)
         expected_text = 'You successfully clicked an alert'
         self.assertEqual(result_text, expected_text, "Result not matched")
+
+    def testJsConfirmCancel(self):
+        self.driver.find_element(*self.CONFIRM_SELECTOR).click()
+        js_alert = self.driver.switch_to.alert
+        js_alert.dismiss()
+        result_text = self.driver.find_element(*self.RESULT_SELECTOR).text
+        expected_text = 'You clicked: Cancel'
+        self.assertEqual(result_text, expected_text, "Result not matched")
+
+
+
