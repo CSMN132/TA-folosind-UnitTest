@@ -10,6 +10,7 @@ class TestAlerts(unittest.TestCase):
     ALERT_SELECTOR = (By.XPATH, '//button [@onclick="jsAlert()"]')
     RESULT_SELECTOR = (By.ID, 'result')
     CONFIRM_SELECTOR = (By.CSS_SELECTOR, 'button[onclick="jsConfirm()"]')
+    PROMPT_SELECTOR = (By.CSS_SELECTOR, 'button[onclick="jsPrompt()"]')
 
     def setUp(self):
         self.driver = webdriver.Chrome()
@@ -24,7 +25,6 @@ class TestAlerts(unittest.TestCase):
         js_alert = self.driver.switch_to.alert
         js_alert.accept()
         result_text = self.driver.find_element(*self.RESULT_SELECTOR).text
-        print(result_text)
         expected_text = 'You successfully clicked an alert'
         self.assertEqual(result_text, expected_text, "Result not matched")
 
@@ -35,6 +35,17 @@ class TestAlerts(unittest.TestCase):
         result_text = self.driver.find_element(*self.RESULT_SELECTOR).text
         expected_text = 'You clicked: Cancel'
         self.assertEqual(result_text, expected_text, "Result not matched")
+
+    def testJsPrompt(self):
+        sent_text = 'TestTest'
+        self.driver.find_element(*self.PROMPT_SELECTOR).click()
+        js_alert = self.driver.switch_to.alert
+        js_alert.send_keys(sent_text)
+        js_alert.accept()
+        result_text = self.driver.find_element(*self.RESULT_SELECTOR).text
+        expected_text = f'You entered: {sent_text}'
+        self.assertEqual(result_text, expected_text, "Result not matched")
+
 
 
 
